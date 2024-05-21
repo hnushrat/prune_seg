@@ -73,10 +73,10 @@ if model_string == "fusion":
 ```
 
 In prune_weights_reparam method of the above code segment check for instances:
-
+```
 if isinstance(m, spnn.Conv3d):
             prune.identity(m, name="kernel")
-
+```
 ###
 Open the config file in “iterate.py”
 ```
@@ -103,12 +103,17 @@ In common.get_model_flops():
 ###
 If statement to check if custom_data is used.
 
-Changed dummy_input to dummy_input = next(iter(custom_data))
-
+Changed dummy_input to:
+```
+dummy_input = next(iter(custom_data))
+```
 ###
 In PARAMETRIZED_MODULE_TYPES:
 Add torchsparse.nn.Conv3d,
+
+
 In predict2_withgt:
+```
 global device
     y_hat = []
     y_gt = []
@@ -117,10 +122,11 @@ global device
             y_hat.append(net(data)["point_predict"])
             y_gt.append(net(data)["point_labels"])
     return y_hat, y_gt
+```
 
-###
 Changes in the “Hook” class:
 In “hook_fn”:
+```
 if not isinstance(input[0], torch.Tensor):
    self.input_tensor = input[0]
    self.input =  self.input_tensor.s[1:]
@@ -129,8 +135,9 @@ else:
     self.input_tensor = input[0]
     self.input =  self.input_tensor.size()[1] 
     self.output = output.size()[1] # torch.tensor(output[0].shape[1:])
-
+```
 At the bottom:
+```
 for o_dim, surv, tot, m in zip(output_dimens, unmaskeds, totals, layers):
         if isinstance(m, torchsparse.nn.Conv3d):
             denom_flops += (o_dim[-2] * o_dim[-1]) * int(tot) + (0 if m.bias is None else o_dim.prod())
@@ -139,14 +146,14 @@ for o_dim, surv, tot, m in zip(output_dimens, unmaskeds, totals, layers):
             denom_flops += tot
             nom_flops += surv
     return nom_flops / denom_flops
-###
+```
 In “algo.py” in the function get_ele_per_output_channel:
-##############
+```
     # print(tensor_weights.size())
     if len(tensor_weights.shape) == 3:
         tensor_weights = tensor_weights[..., None, None]
         return tensor_weights[0, :, :, :, :].numel()
-    ##############
+```
 ###
 
 In “pruners.py” joblib was used to save dictionary instead of pickle due to memory limit.
