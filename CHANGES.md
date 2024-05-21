@@ -24,7 +24,7 @@ import yaml
 from easydict import EasyDict
 from .models.fusion.spvcnn.spvcnn import SPVCNN
 
-
+```
 def merge_new_config(config, new_config):
     if '_BASE_CONFIG_' in new_config:
         with open(new_config['_BASE_CONFIG_'], 'r') as f:
@@ -45,8 +45,8 @@ def merge_new_config(config, new_config):
 
 
     return config
-
-###
+```
+```
 def cfg_from_yaml_file(cfg_file, config = EasyDict()):
     with open(cfg_file, 'r') as f:
         try:
@@ -61,7 +61,8 @@ def cfg_from_yaml_file(cfg_file, config = EasyDict()):
 
 
     return config
-###
+```
+```
 if model_string == "fusion":
         cfgs = cfg_from_yaml_file("/mnt/e/PCSeg/tools_prune/models/fusion/spvcnn/spvcnn_mk18_cr10.yaml")
         model = SPVCNN(cfgs["MODEL"], num_class = 20)
@@ -69,6 +70,7 @@ if model_string == "fusion":
         batch_size = cfgs["OPTIM"]["BATCH_SIZE_PER_GPU"]
         opt_pre = {}
         opt_post = {"steps": 40000}
+```
 
 In prune_weights_reparam method of the above code segment check for instances:
 
@@ -77,6 +79,7 @@ if isinstance(m, spnn.Conv3d):
 
 ###
 Open the config file in “iterate.py”
+```
 cfgs = cfg_from_yaml_file("/mnt/e/PCSeg/tools_prune/models/fusion/spvcnn/spvcnn_mk18_cr10.yaml")
 _, train_loader, _ = build_dataloader(
             data_cfgs=cfgs.DATA,
@@ -89,7 +92,8 @@ _, train_loader, _ = build_dataloader(
             training=True,
             merge_all_iters_to_one_epoch=False,
             total_epochs=epoch_cnt)
-###
+```
+
 In “iterate.py” change the method weight_pruner_loader()added a new input parameter: “custom_data=None” and pass “train_loader” to it along with default arguments.
 
 ###
