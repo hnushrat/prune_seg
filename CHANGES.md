@@ -11,6 +11,7 @@ This line was added right before mapping the objects from the dictionary.
 
 
 ### PRUNER
+In "iterate.py"
 
 Add imports:
 from pcseg.data import build_dataloader
@@ -19,11 +20,14 @@ from easydict import EasyDict
 
 Copy “spvcnn.py” from UniSeg to tools_prune/models/fusion
 
-In the model_and_opt_loader add the following:
+
+```
 import yaml
 from easydict import EasyDict
 from .models.fusion.spvcnn.spvcnn import SPVCNN
 
+```
+In "iterate.py":
 ```
 def merge_new_config(config, new_config):
     if '_BASE_CONFIG_' in new_config:
@@ -45,8 +49,8 @@ def merge_new_config(config, new_config):
 
 
     return config
-```
-```
+
+
 def cfg_from_yaml_file(cfg_file, config = EasyDict()):
     with open(cfg_file, 'r') as f:
         try:
@@ -62,6 +66,7 @@ def cfg_from_yaml_file(cfg_file, config = EasyDict()):
 
     return config
 ```
+In the model_and_opt_loader add the following:
 ```
 if model_string == "fusion":
         cfgs = cfg_from_yaml_file("/mnt/e/PCSeg/tools_prune/models/fusion/spvcnn/spvcnn_mk18_cr10.yaml")
@@ -70,6 +75,11 @@ if model_string == "fusion":
         batch_size = cfgs["OPTIM"]["BATCH_SIZE_PER_GPU"]
         opt_pre = {}
         opt_post = {"steps": 40000}
+
+        ...
+
+        checkpoint = torch.load(f"{PATH TO YOUR BUILT MODEL}")
+
 ```
 
 In prune_weights_reparam method of the above code segment check for instances:
