@@ -10,25 +10,18 @@ Inversion of the predicted labels was a must, as the predictions were inverse.
 This line was added right before mapping the objects from the dictionary.
 
 
+
 ### PRUNER
+Copy “spvcnn.py” from UniSeg to tools_prune/models/fusion
+
 In "iterate.py"
 
 Add imports:
+```
 from pcseg.data import build_dataloader
 import yaml
 from easydict import EasyDict
 
-Copy “spvcnn.py” from UniSeg to tools_prune/models/fusion
-
-
-```
-import yaml
-from easydict import EasyDict
-from .models.fusion.spvcnn.spvcnn import SPVCNN
-
-```
-In "iterate.py":
-```
 def merge_new_config(config, new_config):
     if '_BASE_CONFIG_' in new_config:
         with open(new_config['_BASE_CONFIG_'], 'r') as f:
@@ -68,6 +61,12 @@ def cfg_from_yaml_file(cfg_file, config = EasyDict()):
 ```
 In the model_and_opt_loader add the following:
 ```
+
+import yaml
+from easydict import EasyDict
+from .models.fusion.spvcnn.spvcnn import SPVCNN
+
+
 if model_string == "fusion":
         cfgs = cfg_from_yaml_file("/mnt/e/PCSeg/tools_prune/models/fusion/spvcnn/spvcnn_mk18_cr10.yaml")
         model = SPVCNN(cfgs["MODEL"], num_class = 20)
